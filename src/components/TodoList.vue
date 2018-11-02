@@ -6,6 +6,7 @@
             placeholder="What needs to be done?" 
             v-model="newTodo"
             @keyup.enter="addTodo">
+        <transition-group name="fade" enter-active-class="animated fadeInUp" leave-active-class="animated fadeOutDown">
         <div class="todo-item" v-for="(todo, index) in todosFiltered" :key="todo.id">
             <div class="todo-item-left">
                 <input type="checkbox" name="" id="" v-model="todo.completed">
@@ -16,6 +17,7 @@
                 &times;
             </div>
         </div>
+        </transition-group>
         <div class="extra-container">
             <div><label for=""><input type="checkbox" :checked="!anyRemaining" @change="checkAllTodos">Check all</label></div>
             <div>{{ remaining }} items left</div>
@@ -29,7 +31,9 @@
             </div>
 
             <div>
-                Clear Completed
+                <transition name="fade">
+                    <button v-if="showClearCompletedBtn" @click="clearCompleted">Clear Completed</button>
+                </transition>
             </div>
         </div>
     </div>
@@ -81,7 +85,10 @@ export default {
             } else if (this.filter == 'completed') {
                 return this.todos.filter(todo => todo.completed)
             }
-        }
+        },
+        showClearCompletedBtn() {
+            return this.todos.filter(todo => todo.completed).length > 0
+        },
     },
     methods: {
         addTodo() {
@@ -118,12 +125,17 @@ export default {
         },
         checkAllTodos() {
             this.todos.forEach((todo) => todo.completed = event.target.checked)
+        },
+        clearCompleted() {
+            this.todos = this.todos.filter(todo => !todo.completed)
         }
     },
 }
 </script>
 
 <style lang="scss" scoped>
+    @import url("https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css");
+
     .todo-input {
         width: 100%;
         padding: 10px 18px;
@@ -136,6 +148,7 @@ export default {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        animation-duration: .3;
     }
 
     .todo-item-left {
@@ -203,6 +216,15 @@ export default {
 
     .active {
         background: lightgreen;
+    }
+
+    //CSS Transition
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .2s;
+    }
+
+    .fade-enter, .fade-leave-to {
+        opacity: 0;
     }
 </style>
 
