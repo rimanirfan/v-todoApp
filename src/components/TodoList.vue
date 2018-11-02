@@ -6,7 +6,7 @@
             placeholder="What needs to be done?" 
             v-model="newTodo"
             @keyup.enter="addTodo">
-        <div class="todo-item" v-for="(todo, index) in todos" :key="todo.id">
+        <div class="todo-item" v-for="(todo, index) in todosFiltered" :key="todo.id">
             <div class="todo-item-left">
                 <input type="checkbox" name="" id="" v-model="todo.completed">
                 <div v-if="!todo.editing" @dblclick="editTodo(todo)" class="todo-item-label" :class="{ completed: todo.completed }">{{ todo.title }}</div>
@@ -20,6 +20,18 @@
             <div><label for=""><input type="checkbox" :checked="!anyRemaining" @change="checkAllTodos">Check all</label></div>
             <div>{{ remaining }} items left</div>
         </div>
+
+        <div class="extra-container">
+            <div>
+                <button :class="{ active: filter == 'all' }" @click="filter = 'all'">All</button>
+                <button :class="{ active: filter == 'active' }" @click="filter = 'active'">Active</button>
+                <button :class="{ active: filter == 'completed' }" @click="filter = 'completed'">Completed</button>
+            </div>
+
+            <div>
+                Clear Completed
+            </div>
+        </div>
     </div>
 </template>
 
@@ -30,6 +42,7 @@ export default {
             newTodo: '',
             beforeEditTitle: '',
             idTodo: 3,
+            filter: 'all',
             todos: [
                 {
                     'id': 1,
@@ -59,6 +72,15 @@ export default {
         },
         anyRemaining() {
             return this.remaining != 0
+        },
+        todosFiltered() {
+            if (this.filter == 'all'){
+                return this.todos
+            } else if (this.filter == 'active') {
+                return this.todos.filter(todo => !todo.completed)
+            } else if (this.filter == 'completed') {
+                return this.todos.filter(todo => todo.completed)
+            }
         }
     },
     methods: {
