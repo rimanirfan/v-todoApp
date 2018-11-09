@@ -7,16 +7,16 @@
             v-model="newTodo"
             @keyup.enter="addTodo">
         <transition-group name="fade" enter-active-class="animated fadeInUp" leave-active-class="animated fadeOutDown">
-        <div class="todo-item" v-for="(todo, index) in todosFiltered" :key="todo.id">
-            <div class="todo-item-left">
+        <todo-item v-for="(todo, index) in todosFiltered" :key="todo.id" :todo="todo" :index="index">
+            <!-- <div class="todo-item-left">
                 <input type="checkbox" name="" id="" v-model="todo.completed">
                 <div v-if="!todo.editing" @dblclick="editTodo(todo)" class="todo-item-label" :class="{ completed: todo.completed }">{{ todo.title }}</div>
                 <input v-else class="todo-item-edit" type="text" @blur="doneEdit(todo)" @keyup.enter="doneEdit(todo)" @keyup.esc="cancelEdit(todo)" v-focus v-model="todo.title">
             </div>
             <div class="remove-item" @click="removeTodo(index)">
                 &times;
-            </div>
-        </div>
+            </div> -->
+        </todo-item>
         </transition-group>
         <div class="extra-container">
             <div><label for=""><input type="checkbox" :checked="!anyRemaining" @change="checkAllTodos">Check all</label></div>
@@ -40,7 +40,12 @@
 </template>
 
 <script>
+import TodoItem from './TodoItem.vue'
+
 export default {
+    components: {
+        TodoItem
+    },
     data() {
         return {
             newTodo: '',
@@ -133,7 +138,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
     @import url("https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css");
 
     .todo-input {
