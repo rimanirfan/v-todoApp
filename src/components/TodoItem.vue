@@ -1,9 +1,9 @@
 <template>
     <div class="todo-item">
         <div class="todo-item-left">
-            <input type="checkbox" name="" id="" v-model="todo.completed">
-            <div v-if="!todo.editing" @dblclick="editTodo(todo)" class="todo-item-label" :class="{ completed: todo.completed }">{{ todo.title }}</div>
-            <input v-else class="todo-item-edit" type="text" @blur="doneEdit(todo)" @keyup.enter="doneEdit(todo)" @keyup.esc="cancelEdit(todo)" v-focus v-model="todo.title">
+            <input type="checkbox" name="" id="" v-model="completed" @change="doneEdit">
+            <div v-if="!editing" @dblclick="editTodo" class="todo-item-label" :class="{ completed: completed }">{{ title }}</div>
+            <input v-else class="todo-item-edit" type="text" @blur="doneEdit" @keyup.enter="doneEdit" @keyup.esc="cancelEdit" v-focus v-model="title">
         </div>
         <div class="remove-item" @click="removeTodo(index)">
             &times;
@@ -17,12 +17,70 @@ export default {
     props: {
         todo: {
             type:Object,
-            required:true,
+            required:true
         },
         index: {
             type:Number,
-            required:true,
+            required:true
+        },
+        checkAll : {
+            type: Boolean,
+            required: true
         }
+    },
+    data() {
+        return {
+            'id': this.todo.id,
+            'title': this.todo.title,
+            'completed': this.todo.completed,
+            'editing': this.todo.editing,
+            'beforeEditTitle': '',
+        }
+    },
+    watch: {
+        checkAll() {
+            if (this.checkAll) {
+                this.completed = true
+            } else {
+                this.completed = this.todo.completed
+            }
+        }
+    },
+    directives: {
+        focus: {
+            inserted: function (el) {
+                el.focus()
+            }
+        }
+    },
+    methods: {
+        removeTodo(index) {
+            this.$emit('removedTodo', index)
+        },
+        editTodo() {
+            this.beforeEditTitle = this.title
+            this.editing = true
+        },
+        doneEdit() {
+            if(this.title.trim().length == 0) {
+                this.title = this.beforeEditTitle
+            }
+
+            this.editing = false
+            this.$emit('finishedEdit', {
+                'index': this.index,
+                'todo': {
+                    'id': this.id,
+                    'title': this.title,
+                    'completed': this.completed,
+                    'editing': this.editing
+                }
+            })
+        },
+        cancelEdit() {
+            this.title = this.beforeEditTitle
+            this.editing = false;
+        },
     }
 }
 </script>

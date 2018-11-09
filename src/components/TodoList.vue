@@ -7,15 +7,7 @@
             v-model="newTodo"
             @keyup.enter="addTodo">
         <transition-group name="fade" enter-active-class="animated fadeInUp" leave-active-class="animated fadeOutDown">
-        <todo-item v-for="(todo, index) in todosFiltered" :key="todo.id" :todo="todo" :index="index">
-            <!-- <div class="todo-item-left">
-                <input type="checkbox" name="" id="" v-model="todo.completed">
-                <div v-if="!todo.editing" @dblclick="editTodo(todo)" class="todo-item-label" :class="{ completed: todo.completed }">{{ todo.title }}</div>
-                <input v-else class="todo-item-edit" type="text" @blur="doneEdit(todo)" @keyup.enter="doneEdit(todo)" @keyup.esc="cancelEdit(todo)" v-focus v-model="todo.title">
-            </div>
-            <div class="remove-item" @click="removeTodo(index)">
-                &times;
-            </div> -->
+        <todo-item v-for="(todo, index) in todosFiltered" :key="todo.id" :todo="todo" :index="index" :checkAll="!anyRemaining" @removedTodo="removeTodo" @finishedEdit="finishedEdit">
         </todo-item>
         </transition-group>
         <div class="extra-container">
@@ -68,13 +60,6 @@ export default {
             ],
         };
     },
-    directives: {
-        focus: {
-            inserted: function (el) {
-                el.focus()
-            }
-        }
-    },
     computed: {
         remaining() {
             return this.todos.filter(todo => !todo.completed).length
@@ -110,21 +95,6 @@ export default {
             this.newTodo = ''
             this.idTodo++
         },
-        editTodo(todo) {
-            this.beforeEditTitle = todo.title
-            todo.editing = true
-        },
-        doneEdit(todo) {
-            if(todo.title.trim().length == 0) {
-                todo.title = this.beforeEditTitle
-            }
-
-            todo.editing = false
-        },
-        cancelEdit(todo) {
-            todo.title = this.beforeEditTitle
-            todo.editing = false;
-        },
         removeTodo(index) {
             this.todos.splice(index, 1)
         },
@@ -133,6 +103,9 @@ export default {
         },
         clearCompleted() {
             this.todos = this.todos.filter(todo => !todo.completed)
+        },
+        finishedEdit(data) {
+            this.todos.splice(data.index, 1, data.todo)
         }
     },
 }
