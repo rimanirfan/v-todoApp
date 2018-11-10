@@ -11,15 +11,15 @@
         </todo-item>
         </transition-group>
         <div class="extra-container">
-            <todo-check-all :anyRemaining="anyRemaining"></todo-check-all>
-            <todo-items-remaining :remaining="remaining"></todo-items-remaining>
+            <todo-check-all></todo-check-all>
+            <todo-items-remaining></todo-items-remaining>
         </div>
 
         <div class="extra-container">
             <todo-filter></todo-filter>
             <div>
                 <transition name="fade">
-                    <todo-completed :showClearCompletedBtn="showClearCompletedBtn"></todo-completed>
+                    <todo-completed></todo-completed>
                 </transition>
             </div>
         </div>
@@ -65,32 +65,32 @@ export default {
         };
     },
     created() {
-        eventBus.$on('removedTodo', (index) => this.removeTodo(index))
-        eventBus.$on('finishedEdit', (data) => this.finishedEdit(data))
-        eventBus.$on('checkAllChanged', (checked) => this.checkAllTodos(checked))
-        eventBus.$on('filterChanged', (filter) => this.$store.state.filter = filter)
-        eventBus.$on('clearCompletedTodos', () => this.clearCompleted())
+        // eventBus.$on('removedTodo', (index) => this.removeTodo(index))
+        // eventBus.$on('finishedEdit', (data) => this.finishedEdit(data))
+        // eventBus.$on('checkAllChanged', (checked) => this.checkAllTodos(checked))
+        // eventBus.$on('filterChanged', (filter) => this.$store.state.filter = filter)
+        // eventBus.$on('clearCompletedTodos', () => this.clearCompleted())
     },
     beforeDestroy() {
-        eventBus.$off('removedTodo', (index) => this.removeTodo(index))
-        eventBus.$off('finishedEdit', (data) => this.finishedEdit(data))
-        eventBus.$off('checkAllChanged', (checked) => this.checkAllTodos(checked))
-        eventBus.$off('filterChanged', (filter) => this.$store.state.filter = filter)
-        eventBus.$off('clearCompletedTodos', () => this.clearCompleted())
+        // eventBus.$off('removedTodo', (index) => this.removeTodo(index))
+        // eventBus.$off('finishedEdit', (data) => this.finishedEdit(data))
+        // eventBus.$off('checkAllChanged', (checked) => this.checkAllTodos(checked))
+        // eventBus.$off('filterChanged', (filter) => this.$store.state.filter = filter)
+        // eventBus.$off('clearCompletedTodos', () => this.clearCompleted())
     },
     computed: {
-        remaining() {
-            return this.$store.getters.remaining
-        },
+        // remaining() {
+        //     return this.$store.getters.remaining
+        // },
         anyRemaining() {
             return this.$store.getters.anyRemaining
         },
         todosFiltered() {
             return this.$store.getters.todosFiltered
         },
-        showClearCompletedBtn() {
-            return this.$store.getters.showClearCompletedBtn
-        },
+        // showClearCompletedBtn() {
+        //     return this.$store.getters.showClearCompletedBtn
+        // },
     },
     methods: {
         addTodo() {
@@ -107,19 +107,19 @@ export default {
             this.newTodo = ''
             this.idTodo++
         },
-        removeTodo(index) {
-            this.$store.state.todos.splice(index, 1)
-        },
-        checkAllTodos() {
-            this.$store.state.todos.forEach((todo) => todo.completed = event.target.checked)
-        },
-        clearCompleted() {
-            this.$store.state.todos = this.$store.state.todos.filter(todo => !todo.completed)
-        },
-        finishedEdit(data) {
-            const index = this.$store.state.todos.findIndex(item => item.id == data.id)
-            this.$store.state.todos.splice(data.index, 1, data.todo)
-        }
+        // removeTodo(index) {
+        //     this.$store.state.todos.splice(index, 1)
+        // },
+        // checkAllTodos() {
+        //     this.$store.state.todos.forEach((todo) => todo.completed = event.target.checked)
+        // },
+        // clearCompleted() {
+        //     this.$store.state.todos = this.$store.state.todos.filter(todo => !todo.completed)
+        // },
+        // finishedEdit(data) {
+        //     const index = this.$store.state.todos.findIndex(item => item.id == data.id)
+        //     this.$store.state.todos.splice(data.index, 1, data.todo)
+        // }
     },
 }
 </script>
